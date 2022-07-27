@@ -1,7 +1,7 @@
 const { App } = require('@slack/bolt');
 const airtableTools = require(`./src/utilities/airtable-tools`);
 const { blue, darkgray, gray, magenta, yellow, divider, red } = require('./src/utilities/mk-loggers')
-const { appHome, projectProposal, projectHackMd, newAction, handleActionViewSubmission } = require(`./src/show-tools`)
+const { appHome, projectProposal, projectHackMd, newActionView, handleActionViewSubmission } = require(`./src/show-tools`)
 
 require('dotenv').config()
 
@@ -17,13 +17,13 @@ app.message('hello', async ({ message, say }) => {
     await say(`Hey there <@${message.user}>!`);
 });
 
-
-app.view(/modal_action_submission/, handleActionViewSubmission)
+app.view(/action_submission/, handleActionViewSubmission)
 
 app.view(/.*/, async ({ body, view, ack }) => { 
     ack();
+    yellow('got any view')
     darkgray(divider, "view", view)
-    darkgray(divider, "body", body)
+    // darkgray(divider, "body", body)
 });
 
 app.event(/.*/, async ({ event }) => { darkgray(event) });
@@ -36,10 +36,9 @@ app.action(/.*/, async ({ payload, context, body, ack }) => {
     darkgray(divider, `ACTION BODY`, divider, body);
 })
 
-
 app.command("/projectproposal", projectProposal);
 app.command("/projecthackmd", projectHackMd);
-app.command("/action", newAction);
+app.command("/action", newActionView);
 
 (async () => {
   // Start your app

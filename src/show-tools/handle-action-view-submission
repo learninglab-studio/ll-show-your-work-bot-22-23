@@ -1,73 +1,62 @@
 const { findRecordByValue, findRecordById, addRecord } = require('../utilities/airtable-tools')
-const { magenta, gray, yellow, blue, divider, red } = require('../utilities/mk-loggers')
+const { magenta, gray, darkgray, yellow, blue, divider, red } = require('../utilities/mk-loggers')
 
 module.exports = async ({ ack, body, view, client, logger }) => {
     // Acknowledge the view_submission request
     ack();
-    red(divider, divider, "modal_action_submission", divider, divider)
+    red(divider, divider, "action_submission", divider, divider)
     blue(divider, "view", view)
     darkgray(divider, "body", body)
   
-    // Assume there's an input block with `block_1` as the block_id and `input_a`
-    const val = view['state']['values']['action_title']['plain_text_input-action']['value'];
-    const user = body['user']['id'];
+    const name = view['state']['values']['action_title']['plain_text_input-action']['value'];
+    const assignedToSlackIds = view['state']['values']['assigned_to']['multi_users_select-action']['selected_users'];
+    const assignedToAirtableUsers = []
+    for (let i = 0; i < assignedToSlackIds.length; i++) {
+      const slackId = assignedToSlackIds[i];
+      try {
+        const personResult = await findRecordByValue({
+          baseId: process.env.AIRTABLE_22_23_BASE,
+          table: "Users",
+          field: "DevSlackId",
+          value: slackId
+        })
+        assignedToAirtableUsers.push(personResult.id)
+      } catch (error) {
+        
+      }
+    }
+    const assignedByAirtableUsers = []
     try {
-      const personResult = await findRecordByValue({
+      const assignedByResult = await findRecordByValue({
         baseId: process.env.AIRTABLE_22_23_BASE,
         table: "Users",
         field: "DevSlackId",
-        value: user
+        value: body.user.id
       })
-      try {
-        const airtableResult = await addRecord({
-          baseId: process.env.AIRTABLE_22_23_BASE,
-                table: "Actions",
-                record: {
-                    Name: "Title of Action",
-                    // command.user_id,
-                    // command.channel_id,
-                }
-        })
-
-        await client.chat.postMessage({
-          channel: user,
-          text: msg
-        });
-      }
-      catch (error) {
-        logger.error(error);
-      }
-
-
+      assignedByAirtableUsers.push(assignedByResult.id)
     } catch (error) {
-      try {
-      await client.chat.postMessage({
-        channel: user,
-        text: msg
-      });
-      }
-      catch (error) {
-        logger.error(error);
-      }
-
-
+      
     }
-    
-
-    
-    // Message to send user
-    let msg = '';
-    // Save to DB
-    const results = await db.set(user.input, val);
-  
-    if (results) {
-      // DB save was successful
-      msg = 'Your submission was successful';
-    } else {
-      msg = 'There was an error with your submission';
+    const notes = view['state']['values']['action_description']['plain_text_input-action']['value'];
+    const temporalStatus = view['state']['values']['action_temporalStatus']['radio_buttons-action']['selected_option']['value'];
+    const actionRecord = {
+      Name: name,
+      AssignedTo: assignedToAirtableUsers,
+      TemporalStatus: temporalStatus,
+      Notes: notes
     }
-  
-    // Message the user
-    
-  
-  }
+    if (assignedByAirtableUsers) {
+      actionRecord.AssignedBy = assignedByAirtableUsers
+    }
+    magenta(actionRecord)
+    try {
+      const airtableResult = await addRecord({
+        baseId: process.env.AIRTABLE_22_23_BASE,
+              table: "Actions",
+              record: actionRecord
+      })
+      magenta(`saved to airtable`, airtableResult)
+    } catch (error) {
+      
+    }
+}

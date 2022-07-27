@@ -24,7 +24,8 @@ module.exports = () => {
                 "type": "plain_text",
                 "text": "Description",
                 "emoji": true
-            }
+            },
+            "block_id": "action_description"
         },
         {
             "type": "input",
@@ -37,7 +38,7 @@ module.exports = () => {
                             "text": "someday",
                             "emoji": true
                         },
-                        "value": "value-0"
+                        "value": "Someday"
                     },
                     {
                         "text": {
@@ -45,7 +46,7 @@ module.exports = () => {
                             "text": "this term",
                             "emoji": true
                         },
-                        "value": "value-1"
+                        "value": "ThisTerm"
                     },
                     {
                         "text": {
@@ -53,7 +54,7 @@ module.exports = () => {
                             "text": "this month",
                             "emoji": true
                         },
-                        "value": "value-2"
+                        "value": "ThisMonth"
                     },
                     {
                         "text": {
@@ -61,7 +62,7 @@ module.exports = () => {
                             "text": "this week",
                             "emoji": true
                         },
-                        "value": "value-3"
+                        "value": "ThisWeek"
                     },
                     {
                         "text": {
@@ -69,7 +70,7 @@ module.exports = () => {
                             "text": "today",
                             "emoji": true
                         },
-                        "value": "value-4"
+                        "value": "Today"
                     }
                 ],
                 "action_id": "radio_buttons-action"
@@ -78,7 +79,8 @@ module.exports = () => {
                 "type": "plain_text",
                 "text": "Label",
                 "emoji": true
-            }
+            },
+            "block_id": "action_temporalStatus"
         }
     ]
 }
