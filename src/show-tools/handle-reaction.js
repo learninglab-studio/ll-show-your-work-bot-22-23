@@ -17,7 +17,6 @@ module.exports = async ({ event, context, client }) => {
     //       "EventJson": JSON.stringify(event)
     //   }
     // }
-
     if (event.reaction == "camera") {
         yellow('got a camera')
         client.chat.postMessage({
@@ -46,7 +45,7 @@ module.exports = async ({ event, context, client }) => {
                             "text": "Click Me to Update",
                             "emoji": true
                         },
-                        "value": "click_me_123",
+                        "value": "image-update",
                         "action_id": "button-action"
                     }
                 }

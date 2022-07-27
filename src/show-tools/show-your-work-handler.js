@@ -46,6 +46,7 @@ module.exports = async ({ message, client, say }) => {
             magenta(divider)
             cyan(theRecord)
             const airtableResult = await airtableTools.addRecord(theRecord) 
+            cyan(airtableResult)
             const mdPostResult = await client.chat.postMessage({
                 channel: message.channel,
                 thread_ts: message.ts,
