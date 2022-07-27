@@ -30,5 +30,6 @@ module.exports.green = (...things) => {myTypeOfLog(things, "green" ) }
 module.exports.red = (...things) => {myTypeOfLog(things, "red" ) }
 module.exports.white = (...things) => {myTypeOfLog(things, "white" ) }
 module.exports.gray = (...things) => {myTypeOfLog(things, "gray" ) }
+module.exports.grey = (...things) => {myTypeOfLog(things, "gray" ) }
 module.exports.darkgray = (...things) => {myTypeOfLog(things, "darkgray" ) }
 module.exports.divider = `#########################################################\n#########################################################`

@@ -2,6 +2,9 @@ const { App } = require('@slack/bolt');
 const airtableTools = require(`./src/utilities/airtable-tools`);
 const { blue, darkgray, gray, magenta, yellow, divider, red } = require('./src/utilities/mk-loggers')
 const { appHome, projectProposal, projectHackMd, newActionView, handleActionViewSubmission } = require(`./src/show-tools`)
+const mw = require('./src/utilities/slack-middleware')
+const messageHandler = require('./src/show-tools/message-handler')
+const handleReaction = require('./src/show-tools/handle-reaction')
 
 require('dotenv').config()
 
@@ -17,6 +20,8 @@ app.message('hello', async ({ message, say }) => {
     await say(`Hey there <@${message.user}>!`);
 });
 
+app.message(/.*/, mw.noBot, messageHandler.parseAllNonBot);
+
 app.view(/action_submission/, handleActionViewSubmission)
 
 app.view(/.*/, async ({ body, view, ack }) => { 
@@ -27,7 +32,7 @@ app.view(/.*/, async ({ body, view, ack }) => {
 });
 
 app.event(/.*/, async ({ event }) => { darkgray(event) });
-app.event("reaction_added", async ({ event, client }) => { yellow("got a reaction", event) });
+app.event("reaction_added", handleReaction);
 app.event('app_home_opened', appHome);
 
 app.action(/.*/, async ({ payload, context, body, ack }) => {

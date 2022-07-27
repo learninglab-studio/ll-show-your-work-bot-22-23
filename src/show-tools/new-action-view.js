@@ -7,7 +7,7 @@ module.exports = async ({ command, client, say, ack }) => {
     darkgray(`user ${command.user_id} has requested a new action 1\n${JSON.stringify(command, null, 4)}`)
     const theView = await createView({
         user: command.user_id, 
-        trigger_id: command.trigger_id, 
+        trigger_id: command.trigger_id,
         commandText: command.text
     })
     try {
